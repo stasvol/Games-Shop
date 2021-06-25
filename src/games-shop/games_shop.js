@@ -5,8 +5,11 @@ import axios from "axios";
 const ShopGames  = () =>{
 
     const [searchResults, setSearchResults] = useState([]);
+
     const [searchQuery, setSearchQuery] = useState("");
     const [searchGames , setSearchGames] = useState([]);
+
+    const [checkValue, setCheckValue] = useState(true)
 
     // const games = ["Sir", "Alexa", "Betmen", "Fasad", "Twit", "Lin", "Sink"]
     // useEffect(() => {
@@ -22,7 +25,7 @@ const ShopGames  = () =>{
     const ADDITIONAL_PATH = 'stores'
     const ADDITIONAL_PATH_2 = 'deals'
     const storeID= []
-    const title = ''
+    const title = searchQuery
 
     useEffect(()=>{
       axios.get( `${BASE_PATH}${ADDITIONAL_PATH}`)
@@ -43,40 +46,37 @@ const ShopGames  = () =>{
 
     },[])
 
+    const setAxiosResult =result=> {
+        setSearchResults(result)
+    }
 
     const axiosData = (searchQuery) => {
-
+        setSearchQuery(searchQuery)
         axios.get
-        // ('https://www.cheapshark.com/api/1.0/deals?storeID=1,2,3&title=batman')
-            (`${BASE_PATH}${ADDITIONAL_PATH_2}?${storeID}${title}`)
+        (`https://www.cheapshark.com/api/1.0/games?title=${searchQuery}`)
+        //     (`${BASE_PATH}${ADDITIONAL_PATH_2}?${storeID}${title}`)
             .then(res=> {
                 const games = res.data
                 setSearchGames(games)
-
+                console.log(games)
             })
             .catch(error=> console.error('Error '+ error))
-        console.log(searchGames)
+
     }
 
-   const setAxiosResult =result=> {
-       setSearchResults(result)
-   }
-    console.log(searchGames)
+
 
     const getSearch =(key)=> {
         if (key  ===  'Enter') {
             setSearchQuery(searchQuery)
-
-
+            // setSearchGames(searchGames )
+            // axiosData(searchQuery)
         }
         axiosData(searchQuery)
-        console.log("ONE"+  searchQuery)
-
     }
 
     const handleChange =(e)=> {
         setSearchQuery(e.target.value)
-        console.log("TWO"+  searchQuery)
 
     }
     // const results = !searchTerm
@@ -93,10 +93,11 @@ const ShopGames  = () =>{
         { searchGames && searchGames.length
 
             ?   searchGames.map((item,i) =>(
-                <div key={i}>{item.internalName} </div>)).filter(title => title !== searchQuery)
+                <div key={i}>{item.internalName} </div>))
+                // .filter(elem => elem.title !== searchQuery)
                 // <span key={i}>{item.internalName}  {item.title} <img src={item.thumb}/> </span>))
 
-            : <p>Empty game list</p>
+            :   <p>Empty game list</p>
 
 
         }
@@ -106,7 +107,7 @@ const ShopGames  = () =>{
 
         <ul>
             {searchResults.map((item,i) => (
-                <li key={item.storeID}>{item.storeName} <input type={'checkbox'}/>
+                <li key={item.storeID}>{item.storeName} <input  name={'checkbox'} type={'checkbox'} value={checkValue}/>
 
                  {/*{item.images.icon}*/}
                  {/*{item.isActive}*/}
@@ -120,7 +121,18 @@ const ShopGames  = () =>{
             ))}
         </ul>
         <h3>Deals</h3>
-        <p>Empty deals list</p>
+        { searchGames && searchGames.length && checkValue===true
+
+            ?   searchGames.map((item,i) =>(
+                <div key={i}><a href={'#'}>Title:{item.external}Rating:{item.steamAppID}</a> <img src={item.thumb}/></div>))
+            // .filter(elem => elem.title !== searchQuery)
+            // <span key={i}>{item.internalName}  {item.title} <img src={item.thumb}/> </span>))
+
+            :   <p>Empty game list</p>
+
+
+        }
+        {/*<p>Empty deals list</p>*/}
     </div>
 }
 
