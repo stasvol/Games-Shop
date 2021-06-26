@@ -9,7 +9,7 @@ const ShopGames  = () =>{
     const [searchQuery, setSearchQuery] = useState("");
     const [searchGames , setSearchGames] = useState([]);
 
-    const [checkValue, setCheckValue] = useState(true)
+    const [checkValue, setCheckValue] = useState(false)
 
     // const games = ["Sir", "Alexa", "Betmen", "Fasad", "Twit", "Lin", "Sink"]
     // useEffect(() => {
@@ -71,11 +71,14 @@ const ShopGames  = () =>{
             setSearchQuery(searchQuery)
             // setSearchGames(searchGames )
             // axiosData(searchQuery)
+
         }
         axiosData(searchQuery)
+        setCheckValue(false)
     }
 
     const handleChange =(e)=> {
+
         setSearchQuery(e.target.value)
 
     }
@@ -107,7 +110,7 @@ const ShopGames  = () =>{
 
         <ul>
             {searchResults.map((item,i) => (
-                <li key={item.storeID}>{item.storeName} <input  name={'checkbox'} type={'checkbox'} value={checkValue}/>
+                <li key={item.storeID}>{item.storeName} <input onChange={()=> { if (item.storeName !== checkValue  ) setCheckValue(!checkValue)}} name={'checkbox'} type={'checkbox'} checked={checkValue}/>
 
                  {/*{item.images.icon}*/}
                  {/*{item.isActive}*/}
@@ -135,5 +138,6 @@ const ShopGames  = () =>{
         {/*<p>Empty deals list</p>*/}
     </div>
 }
+
 
 export default ShopGames
