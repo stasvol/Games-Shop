@@ -2,14 +2,14 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 
 
-const ShopGames  = () =>{
+const ShopGames = () => {
 
     const [searchResults, setSearchResults] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [searchGames , setSearchGames] = useState([]);
+    const [searchGames, setSearchGames] = useState([]);
 
-    const [isChecked, setIsChecked] = useState(false);
+    const [dealsGames, setDeals] = useState([]);
 
     // const games = ["Sir", "Alexa", "Betmen", "Fasad", "Twit", "Lin", "Sink"]
     // useEffect(() => {
@@ -24,60 +24,98 @@ const ShopGames  = () =>{
     const SEARCH_PARAM = 'query= '
     const ADDITIONAL_PATH = 'stores'
     const ADDITIONAL_PATH_2 = 'deals'
-    const storeID= []
+    const storeID = []
     const title = searchQuery
 
-    useEffect(()=>{
-      axios.get
-      // ( `${BASE_PATH}${ADDITIONAL_PATH}`)
-          ('https://www.cheapshark.com/api/1.0/stores' )
+    useEffect(() => {
+        axios.get
+            // ( `${BASE_PATH}${ADDITIONAL_PATH}`)
+            ('https://www.cheapshark.com/api/1.0/stores')
 
-          // .then(res=> {
-          //     const result  = res.data
-          //     setSearchResults(result)
-          //     console.log(result)
-          // })
+            // .then(res=> {
+            //     const result  = res.data
+            //     setSearchResults(result)
+            //     console.log(result)
+            // })
 
-          .then(res=> res.data)
-          .then(result => setAxiosResult(result))
-          .catch(error=> console.error('Error '+ error ))
+            .then(res => res.data)
+            .then(result => setAxiosResult(result))
+            .catch(error => console.error('Error ' + error))
 
         // https://www.cheapshark.com/api/1.0/deals?storeID=1,2,3&title=batman
         // https://www.cheapshark.com/api/1.0/stores
 
-    },[])
+    }, [])
 
-    const setAxiosResult =result=> {
-        setSearchResults(result)
+    const setAxiosResult = result => {
+        const stories = result.map(store => ({...store, isChecked: false}));
+        setSearchResults(stories)
     }
+
 
     const axiosData = (searchQuery) => {
         setSearchQuery(searchQuery)
         axios.get
         (`https://www.cheapshark.com/api/1.0/games?title=${searchQuery}`)
-        //     (`${BASE_PATH}${ADDITIONAL_PATH_2}?${storeID}${title}`)
-            .then(res=> {
+            //     (`${BASE_PATH}${ADDITIONAL_PATH_2}?${storeID}${title}`)
+            .then(res => {
                 const games = res.data
                 setSearchGames(games)
                 console.log(games)
             })
-            .catch(error=> console.error('Error '+ error))
+            .catch(error => console.error('Error ' + error))
 
     }
 
+    useEffect(() => {
+        // const storiesIds = searchResults
+        //     .filter(item => item.isChecked)
+        //     .map(item => item.storeID)
+        //     .join(',');
 
+        // const storiesIds = searchResults.filter(item => item.isChecked);
+        // const ids = [];
+        // storiesIds.forEach(item => {
+        //     ids.push(item.storeID);
+        // })
 
-    const getSearch =(e)=> {
-        if (e.key  ===  'Enter') {
+        const storiesIds = searchResults
+            .filter(item => item.isChecked) // [{}, {}]
+            .map(item => {
+                return item.storeID;
+            })  // [1, 3, 5]
+            .join(','); // 1,2,3
+
+        axios.get(` https://www.cheapshark.com/api/1.0/deals?storeID=${storiesIds}&title=${searchQuery}`)
+            // .then(res => {
+            //     const deals = res.data
+            //     setDeals(deals)
+            //     console.log( deals )
+            // })
+            .then(res => res.data)
+            .then(deals => setAxiosDeals(deals))
+            .catch(error => console.error('Error ' + error))
+
+    }, [searchQuery, searchResults])
+
+    const setAxiosDeals = deals => {
+        setDeals(deals)
+        // console.log( "DEALS " + deals)
+
+    }
+    console.log(dealsGames)
+
+    const getSearch = (e) => {
+        if (e.key === 'Enter') {
             setSearchQuery(searchQuery)
             // setSearchGames(searchGames )
             axiosData(searchQuery)
+
         }
         // axiosData(searchQuery)
-        setIsChecked(false)
     }
 
-    const handleChange =(e)=> {
+    const handleChange = (e) => {
 
         setSearchQuery(e.target.value)
 
@@ -86,14 +124,21 @@ const ShopGames  = () =>{
     //     ? games
     //     : games.filter(games => games.includes(searchTerm)
     //     );
-   const handleCheck = (i) =>{
+    const handleCheck = (id) => {
+        // setSearchResults(prevSearchResults => prevSearchResults.map(item => item.storeID === id
+        //     ? ({ ...item, isChecked: !item.isChecked })
+        //     : item
+        // ));
 
-        const arr = searchResults;
-        arr[i].isChecked = !arr[i].isChecked
+        const newStories = searchResults.map(item => {
+            if (item.storeID === id) {
+                return {...item, isChecked: !item.isChecked};
+            } else {
+                return item;
+            }
+        });
 
-       setIsChecked({
-           searchResults: arr
-        })
+        setSearchResults(newStories);
     }
     // const handlerCheck = (e) => {
     // // let newArray=[...checkValue.e.target.id]
@@ -117,55 +162,64 @@ const ShopGames  = () =>{
     //     // const {name} = target
     //     // setCheckValue(prevCheck=> ({...prevCheck,[name]:value})) ;
     // }
+
+
     return <div>
 
-            <input onKeyPress={getSearch} onChange={handleChange} type="search" placeholder="Search" value={searchQuery} />
+        <input onKeyPress={getSearch} onChange={handleChange} type="search" placeholder="Search" value={searchQuery}/>
 
 
-             <h3>Games</h3>
-        { searchGames && searchGames.length
+        <h3>Games</h3>
+        {searchGames && searchGames.length
 
-            ?   searchGames.map((item,i) =>(
+            ? searchGames.map((item, i) => (
                 <div key={i}>{item.internalName} </div>))
-                // .filter(elem => elem.title !== searchQuery)
-                // <span key={i}>{item.internalName}  {item.title} <img src={item.thumb}/> </span>))
+            // .filter(elem => elem.title !== searchQuery)
+            // <span key={i}>{item.internalName}  {item.title} <img src={item.thumb}/> </span>))
 
-            :   <p>Empty game list</p>
+            : <p>Empty game list</p>
 
 
         }
 
 
-             <h3>Stores</h3>
+        <h3>Stores</h3>
 
         <ul>
-            {searchResults.map((item,i) => (
-                <li key={item.storeID}>{item.storeName} <input onChange={
-                    ()=> handleCheck(i)}
-                    // ()=> { if (searchResults.filter(el=>el===item.storeName)) setIsChecked(!isChecked)}}
-                    // ()=> { if (item.storeName !== checkValue  ) setCheckValue(!checkValue)}}
-                                                               name={'checkbox'} type={'checkbox'} checked={isChecked}/>
+            {searchResults.map((item, i) => (
+                <li key={item.storeID}>{item.storeName}
+                    <input onChange={() => handleCheck(item.storeID)} name={'checkbox'} type={'checkbox'}
+                           checked={item.isChecked}/>
 
-                 {/*{item.images.icon}*/}
-                 {/*{item.isActive}*/}
-                 {/*{item.storeID}*/}
-                 {/*{item.isActive}*/}
 
-                 {/*   thumb: "https://cdn.cloudflare.steamstatic.com/steam/apps*/}
-                 {/*   {item.internalName} <img src={item.thumb}/>*/}
+                    {/*{item.images.icon}*/}
+                    {/*{item.isActive}*/}
+                    {/*{item.storeID}*/}
+                    {/*{item.isActive}*/}
+
+                    {/*   thumb: "https://cdn.cloudflare.steamstatic.com/steam/apps*/}
+                    {/*   {item.internalName} <img src={item.thumb}/>*/}
 
                 </li>
             ))}
         </ul>
         <h3>Deals</h3>
-        { searchGames && searchGames.length && isChecked===true
+        {searchGames && searchGames.length && dealsGames
 
-            ?   searchGames.map((item,i) =>(
-                <div key={i}><a href={'#'}>Title:{item.external}Rating:{item.steamAppID}</a> <img src={item.thumb}/></div>))
+            ? dealsGames.map((item, i) => (
+                <div key={i}>
+                    <a href={`https://www.metacritic.com${item.metacriticLink}`} target="_blank">
+                        Title:{item.title}
+                        {item.metacriticScore}
+                        Rating:{item.dealRating}
+                         Date: {new Date(item.releaseDate).toLocaleDateString()}
+                        <img src={item.thumb}/>
+                    </a>
+                </div>))
             // .filter(elem => elem.title !== searchQuery)
             // <span key={i}>{item.internalName}  {item.title} <img src={item.thumb}/> </span>))
 
-            :   <p>Empty game list</p>
+            : <p>Empty game list</p>
 
 
         }
