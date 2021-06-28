@@ -103,7 +103,7 @@ const ShopGames = () => {
         // console.log( "DEALS " + deals)
 
     }
-    console.log(dealsGames)
+
 
     const getSearch = (e) => {
         if (e.key === 'Enter') {
