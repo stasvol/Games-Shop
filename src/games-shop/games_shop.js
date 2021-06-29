@@ -22,14 +22,15 @@ const ShopGames = () => {
     const BASE_PATH = 'https://www.cheapshark.com/api/1.0/'
     const SEARCH_PATH = 'search'
     const SEARCH_PARAM = 'query= '
-    const ADDITIONAL_PATH = 'stores'
-    const ADDITIONAL_PATH_2 = 'deals'
-    const storeID = []
-    const title = searchQuery
+    const STORES_PARAM = 'stores'
+    const PARAM_DEALS = 'deals'
+    const PARAM_GAMES = 'games'
+    const PARAM_STORE_ID = 'storeID='
+    const TITLE_PARAM = 'title='
 
     useEffect(() => {
         axios.get
-            // ( `${BASE_PATH}${ADDITIONAL_PATH}`)
+            // ( `${BASE_PATH}${STORES_PARAM}`)
             ('https://www.cheapshark.com/api/1.0/stores')
 
             // .then(res=> {
@@ -57,7 +58,7 @@ const ShopGames = () => {
         setSearchQuery(searchQuery)
         axios.get
         (`https://www.cheapshark.com/api/1.0/games?title=${searchQuery}`)
-            //     (`${BASE_PATH}${ADDITIONAL_PATH_2}?${storeID}${title}`)
+            //     (`${BASE_PATH}${PARAM_GAMES}?${TITLE_PARAM}${searchQuery}`)
             .then(res => {
                 const games = res.data
                 setSearchGames(games)
@@ -87,6 +88,7 @@ const ShopGames = () => {
             .join(','); // 1,2,3
 
         axios.get(` https://www.cheapshark.com/api/1.0/deals?storeID=${storiesIds}&title=${searchQuery}`)
+
             // .then(res => {
             //     const deals = res.data
             //     setDeals(deals)
@@ -174,8 +176,7 @@ const ShopGames = () => {
 
             ? searchGames.map((item, i) => (
                 <div key={i}>{item.internalName} </div>))
-            // .filter(elem => elem.title !== searchQuery)
-            // <span key={i}>{item.internalName}  {item.title} <img src={item.thumb}/> </span>))
+
 
             : <p>Empty game list</p>
 
@@ -190,8 +191,6 @@ const ShopGames = () => {
                 <li key={item.storeID}>{item.storeName}
                     <input onChange={() => handleCheck(item.storeID)} name={'checkbox'} type={'checkbox'}
                            checked={item.isChecked}/>
-
-
                     {/*{item.images.icon}*/}
                     {/*{item.isActive}*/}
                     {/*{item.storeID}*/}
@@ -204,7 +203,7 @@ const ShopGames = () => {
             ))}
         </ul>
         <h3>Deals</h3>
-        {searchGames && searchGames.length && dealsGames
+        {searchGames && searchGames.length && dealsGames.length
 
             ? dealsGames.map((item, i) => (
                 <div key={i}>
@@ -213,17 +212,15 @@ const ShopGames = () => {
                         {item.metacriticScore}
                         Rating:{item.dealRating}
                          Date: {new Date(item.releaseDate).toLocaleDateString()}
-                        <img src={item.thumb}/>
+                        <img src={item.thumb}  alt={item.title} width={100} height={100}/>
                     </a>
                 </div>))
-            // .filter(elem => elem.title !== searchQuery)
-            // <span key={i}>{item.internalName}  {item.title} <img src={item.thumb}/> </span>))
 
             : <p>Empty game list</p>
 
 
         }
-        {/*<p>Empty deals list</p>*/}
+
     </div>
 }
 
