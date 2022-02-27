@@ -186,9 +186,10 @@ const ShopGames = () => {
 
         <h3>Stores</h3>
 
-        <ul>
+        <ul className='items'>
             {searchResults.length  &&  searchResults.map((item, i) => (
-                <li key={item.storeID}>{item.storeName}
+                <li key={item.storeID} >
+                    {item.storeName}
                     <input onChange={() => handleCheck(item.storeID)} name={'checkbox'} type={'checkbox'}
                            checked={item.isChecked}/>
                     {/*{item.images.icon}*/}
