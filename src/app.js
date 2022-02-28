@@ -1,8 +1,6 @@
-import logo from './logo.svg';
-import './App.css';
 import ShopGames from "./games-shop/games_shop";
-import React from "react";
 
+import './app.css';
 // Создаем страницу, которая использует Cheap Shark API (https://apidocs.cheapshark.com/)
 // для простого поиска сделок по играм в разных магазинах.
 // Страница должна позволять:
@@ -15,13 +13,11 @@ import React from "react";
 // 4. Отображение результатов в виде списка: thumbnails, titles, deailRating,
 // ссылка на metacritic и releaseDate
 
-function App() {
-  return (
+const App = () => (
     <div className="App">
            <h2>APP</h2>
       <ShopGames/>
     </div>
   );
-}
 
 export default App;
