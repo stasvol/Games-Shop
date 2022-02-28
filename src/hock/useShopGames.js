@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {BASE_PATH, PARAM_DEALS, PARAM_GAMES, PARAM_STORE_ID, STORES_PARAM, TITLE_PARAM} from "../games-shop/const";
+import {BASE_PATH, PARAM_DEALS, PARAM_GAMES, PARAM_STORE_ID, STORES_PARAM, TITLE_PARAM} from "../components/const";
 
 export const useShopGames = () => {
 

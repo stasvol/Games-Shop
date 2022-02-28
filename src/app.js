@@ -1,4 +1,4 @@
-import ShopGames from "./games-shop/games_shop";
+import ShopGames from "./components/games_shop";
 
 import './app.css';
 // Создаем страницу, которая использует Cheap Shark API (https://apidocs.cheapshark.com/)
