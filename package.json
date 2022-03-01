@@ -3,28 +3,64 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "axios": "^0.21.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-redux": "^7.2.4",
+    "@testing-library/jest-dom": "5.11.4",
+    "@testing-library/react": "11.1.0",
+    "@testing-library/user-event": "12.1.10",
+    "axios": "0.21.1",
+    "prop-types": "15.7.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-redux": "7.2.4",
     "react-scripts": "4.0.3",
-    "redux": "^4.1.0",
-    "web-vitals": "^1.0.1"
+    "redux": "4.1.0",
+    "web-vitals": "1.0.1"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb": "18.1.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-config-react-app": "5.2.1",
+    "eslint-config-standard": "14.1.1",
+    "eslint-plugin-babel": "5.3.1",
+    "eslint-plugin-flowtype": "3.13.0",
+    "eslint-plugin-import": "2.22.0",
+    "eslint-plugin-jest": "23.20.0",
+    "eslint-plugin-jsx-a11y": "6.3.1",
+    "eslint-plugin-node": "10.0.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-react": "7.20.6",
+    "eslint-plugin-react-hooks": "1.7.0",
+    "eslint-plugin-standard": "4.0.1",
+    "husky": "3.1.0",
+    "lint-staged": "9.5.0",
+    "prettier": "1.19.1",
+    "redux-mock-store": "1.5.4",
+    "stylelint": "12.0.1",
+    "stylelint-config-prettier": "8.0.2",
+    "stylelint-config-recommended": "3.0.0",
+    "stylelint-config-standard": "19.0.0",
+    "stylelint-order": "3.1.1",
+    "stylelint-prettier": "1.1.2",
+    "fetch-mock": "9.11.0",
+    "react-error-overlay": "6.0.9"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint:styles": "stylelint --syntax css src/**/*.css",
+    "lint": "eslint --ext .js,.jsx src",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:styles:fix": "npm run lint:styles -- --fix",
+    "format": "prettier \"src/**/*.{js,jsx,yml,yaml,ts,tsx,md,graphql,mdx}\" --write",
+    "format:styles": "prettier \"src/**/*.css\" --parser css --write",
+    "precommit": "lint-staged"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
   },
   "browserslist": {
     "production": [
