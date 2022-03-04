@@ -1,69 +1,80 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import {
-  BASE_PATH,
-  PARAM_DEALS,
-  PARAM_GAMES,
-  PARAM_STORE_ID,
-  SEARCH_PATH,
-  STORES_PARAM,
-  TITLE_PARAM,
-} from '../components/const';
+import { useState } from 'react';
+// import axios from 'axios';
+// import {
+//   BASE_PATH,
+//   // PARAM_DEALS,
+//   PARAM_GAMES,
+//   // PARAM_STORE_ID,
+//   SEARCH_PATH,
+//   STORES_PARAM,
+//   TITLE_PARAM,
+// } from '../components/const';
+import { useSearchResults } from './useSearchResults';
+import { useSearchGames } from './useSearchGames';
 
 export const useShopGames = () => {
-  const [searchResults, setSearchResults] = useState([]);
+  // const [searchResults, setSearchResults] = useState([]);
+  // const [searchGames, setSearchGames] = useState([]);
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchGames, setSearchGames] = useState([]);
-  const [dealsGames, setDeals] = useState([]);
+  const [dealsGames, setDealsGames] = useState([]);
 
-  const setAxiosResult = result => {
-    const stories = result.map(store => ({ ...store, isChecked: false }));
-    setSearchResults(stories);
-  };
+  const { setAxiosResult, searchResults, handleCheck } = useSearchResults(
+    searchQuery,
+    setDealsGames,
+  );
 
-  useEffect(() => {
-    axios
-      .get(`${BASE_PATH}${STORES_PARAM}`)
-      .then(res => res.data)
-      .then(result => setAxiosResult(result))
-      .catch(error => console.error(`Error ${error}`));
-  }, []);
+  const { searchGames, axiosData } = useSearchGames(setAxiosResult, setSearchQuery);
 
-  const axiosData = searchQuery => {
-    setSearchQuery(searchQuery);
-    axios
-      .get(
-        `${BASE_PATH}${PARAM_GAMES}${SEARCH_PATH}${TITLE_PARAM}${searchQuery}`,
-      )
-      .then(res => {
-        const games = res.data;
-        setSearchGames(games);
-      })
-      .catch(error => console.error(`Error ${error}`));
-  };
+  // const setAxiosResult = result => {
+  //   const stories = result.map(store => ({ ...store, isChecked: false }));
+  //   setSearchResults(stories);
+  // };
 
-  const setAxiosDeals = deals => {
-    setDeals(deals);
-    console.log(deals);
-  };
+  // useEffect(() => {
+  //   axios
+  //     .get(`${BASE_PATH}${STORES_PARAM}`)
+  //     .then(res => res.data)
+  //     .then(result => setAxiosResult(result))
+  //     .catch(error => console.error(`Error ${error}`));
+  // }, [setAxiosResult]);
+  //
+  // const axiosData = searchQuery => {
+  //   setSearchQuery(searchQuery);
+  //   axios
+  //     .get(
+  //       `${BASE_PATH}${PARAM_GAMES}${SEARCH_PATH}
+  //       ${TITLE_PARAM}${searchQuery}`,
+  //     )
+  //     .then(res => {
+  //       const games = res.data;
+  //       setSearchGames(games);
+  //     })
+  //     .catch(error => console.error(`Error ${error}`));
+  // };
 
-  useEffect(() => {
-    const storiesIds = searchResults
-      .filter(item => item.isChecked) // [{}, {}] isChecked=true
-      .map(item => {
-        return item.storeID;
-      }) // [1, 3, 5]
-      .join(','); // 1,2,3
+  // const setAxiosDeals = deals => {
+  //   setDealsGames(deals);
+  //   console.log(deals);
+  // };
 
-    axios
-      .get(
-        `${BASE_PATH}${PARAM_DEALS}?${PARAM_STORE_ID}${storiesIds}
-             &${TITLE_PARAM}${searchQuery}`,
-      )
-      .then(res => res.data)
-      .then(deals => setAxiosDeals(deals))
-      .catch(error => console.error(`Error ${error}`));
-  }, [searchQuery, searchResults]);
+  // useEffect(() => {
+  //   const storiesIds = searchResults
+  //     .filter(item => item.isChecked) // [{}, {}] isChecked=true
+  //     .map(item => {
+  //       return item.storeID;
+  //     }) // [1, 3, 5]
+  //     .join(','); // 1,2,3
+  //
+  //   axios
+  //     .get(
+  //       `${BASE_PATH}${PARAM_DEALS}?${PARAM_STORE_ID}${storiesIds}
+  //            &${TITLE_PARAM}${searchQuery}`,
+  //     )
+  //     .then(res => res.data)
+  //     .then(deals => setAxiosDeals(deals))
+  //     .catch(error => console.error(`Error ${error}`));
+  // }, [searchQuery, searchResults]);
 
   const getSearch = e => {
     if (e.key === 'Enter') {
@@ -76,15 +87,15 @@ export const useShopGames = () => {
     setSearchQuery(e.target.value);
   };
 
-  const handleCheck = id => {
-    const newStories = searchResults.map(item => {
-      if (item.storeID === id) {
-        return { ...item, isChecked: !item.isChecked };
-      }
-      return item;
-    });
-    setSearchResults(newStories);
-  };
+  // const handleCheck = id => {
+  //   const newStories = searchResults.map(item => {
+  //     if (item.storeID === id) {
+  //       return { ...item, isChecked: !item.isChecked };
+  //     }
+  //     return item;
+  //   });
+  //   setSearchResults(newStories);
+  // };
 
   return {
     searchResults,
